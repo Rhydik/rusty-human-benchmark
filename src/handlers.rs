@@ -74,3 +74,33 @@ pub async fn read_tasks(
         Err(_) => Err(http::StatusCode::INTERNAL_SERVER_ERROR),
     }
 }
+
+pub async fn update_task(
+    extract::State(pool): extract::State<PgPool>,
+    extract::Path(id): extract::Path<uuid::Uuid>,
+    axum::Json(payload): axum::Json<CreateTask>,
+) -> http::StatusCode {
+    let now = chrono::Utc::now();
+
+    let res = sqlx::query(
+        r#"
+        UPDATE tasks SET title = $1, description = $2, updated_at = $3
+        WHERE id = $4
+        "#,
+    )
+    .bind(&payload.title)
+    .bind(&payload.description)
+    .bind(&now)
+    .bind(&id)
+    .execute(&pool)
+    .await
+    .map(|res| match res.rows_affected() {
+        0 => http::StatusCode::NOT_FOUND,
+        _ => http::StatusCode::OK,
+    });
+
+    match res {
+        Ok(status) => status,
+        Err(_) => http::StatusCode::INTERNAL_SERVER_ERROR,
+    }
+}
