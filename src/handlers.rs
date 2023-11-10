@@ -1,7 +1,6 @@
 use axum::{extract, http};
 use serde::{Serialize, Deserialize};
-use sqlx::{self, FromRow};
-use sqlx::postgres::PgPool;
+use sqlx::{PgPool, FromRow};
 
 #[derive(Serialize, FromRow)]
 pub struct Task {
