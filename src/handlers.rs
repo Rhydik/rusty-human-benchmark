@@ -66,8 +66,9 @@ pub async fn create_task(
 pub async fn read_tasks(
     extract::State(pool): extract::State<PgPool>,
 ) -> Result<axum::Json<Vec<Task>>, http::StatusCode> {
-    let res = sqlx::query_as::<_, Task>("SELECT * FROM tasks"
-    ).fetch_all(&pool).await;
+    let res = sqlx::query_as::<_, Task>("SELECT * FROM tasks")
+        .fetch_all(&pool)
+        .await;
 
     match res {
         Ok(tasks) => Ok(axum::Json(tasks)),

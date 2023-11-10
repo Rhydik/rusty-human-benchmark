@@ -8,7 +8,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>>{
     let port = std::env::var("PORT").unwrap_or_else(|_| "3000".to_string());
     let addr = format!("0.0.0.0:{}", port);
 
-    let database_url = env::var("DATABASE_URL").expect("DATABASE_URL is not set in .env file");
+    let database_url = std::env::var("DATABASE_URL").expect("DATABASE_URL is not set in .env file");
 
     let pool = PgPoolOptions::new()
         .max_connections(5)
